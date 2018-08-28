@@ -49,7 +49,7 @@ $ ssh-keygen
 
 Due to Docker Composes' lack of support for multiline `.env` variables, put a passphrase on it. Then add the key to your application at `lib/oidc_provider_key.pem` and add the passphrase as an environment variables in your application: `ENV["OIDC_PROVIDER_KEY_PASSPHRASE"]`.
 
-# Testing configuration
+# Testing Provider Details
 
 Visit: https://demo.c2id.com/oidc-client/
 
