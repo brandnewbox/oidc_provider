@@ -25,7 +25,7 @@ module OIDCProvider
 
     class << self
       def key_pair
-        @key_pair ||= OpenSSL::PKey::RSA.new(File.read(Rails.root.join("lib/key.pem")), ENV["OPENID_PRIVATE_KEY_PASSPHRASE"])
+        @key_pair ||= OpenSSL::PKey::RSA.new(File.read(Rails.root.join("lib/oidc_provider_key.pem")), ENV["OIDC_PROVIDER_KEY_PASSPHRASE"])
       end
 
       def private_jwk

@@ -2,7 +2,9 @@
 Short description and motivation.
 
 ## Usage
-How to use my plugin.
+Use your application as an Open ID provider.
+
+You'll need some kind of user authentication to exist on you application first. Normally we use Devise.
 
 ## Installation
 Add this line to your application's Gemfile:
@@ -20,6 +22,43 @@ Or install it yourself as:
 ```bash
 $ gem install oidc_provider
 ```
+
+Install the support stuffs:
+
+* an initializer
+* default routes to your routes file
+
+```bash
+$ rails generate oidc_provider:install
+```
+
+Migrations next:
+
+```bash
+$ rails oidc_provider:install:migrations
+$ rails db:migrate
+```
+
+### Private Key
+
+You will need to generate a unique private key per application.
+
+```bash
+$ ssh-keygen
+```
+
+Due to Docker Composes' lack of support for multiline `.env` variables, put a passphrase on it. Then add the key to your application at `lib/oidc_provider_key.pem` and add the passphrase as an environment variables in your application: `ENV["OIDC_PROVIDER_KEY_PASSPHRASE"]`.
+
+# Testing configuration
+
+Visit: https://demo.c2id.com/oidc-client/
+
+Click "OpenID provider details"
+
+Put in your website as the issuer and click "Query"
+
+You should see values generated for all 4 endpoints below.
+
 
 ## Contributing
 Contribution directions go here.
