@@ -1,7 +1,7 @@
 module OIDCProvider
   module Concerns
     module Authentication
-      def current_account
+      def oidc_current_account
         send(OIDCProvider.current_account_method)
       end
 
@@ -10,7 +10,7 @@ module OIDCProvider
       end
 
       def require_authentication
-        authenticate_user!
+        send(OIDCProvider.current_authentication_method)
       end
 
       def require_access_token

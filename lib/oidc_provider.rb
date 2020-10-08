@@ -31,6 +31,9 @@ module OIDCProvider
   mattr_accessor :current_account_method
   @@current_account_method = :current_user
 
+  mattr_accessor :current_authentication_method
+  @@current_authentication_method = :authenticate_user!
+
   mattr_accessor :account_identifier
   @@account_identifier = :id
 

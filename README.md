@@ -92,5 +92,5 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ```
 gem build oidc_provider.gemspec
-gem push oidc_provider-0.1.0.gem
+gem push oidc_provider-0.3.2.gem
 ```

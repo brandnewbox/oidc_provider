@@ -27,11 +27,11 @@ module OIDCProvider
     def openid_configuration
       config = OpenIDConnect::Discovery::Provider::Config::Response.new(
         issuer: OIDCProvider.issuer,
-        authorization_endpoint: authorizations_url,
-        token_endpoint: tokens_url,
-        userinfo_endpoint: user_info_url,
-        end_session_endpoint: end_session_url,
-        jwks_uri: jwks_url,
+        authorization_endpoint: authorizations_url(host: OIDCProvider.issuer),
+        token_endpoint: tokens_url(host: OIDCProvider.issuer),
+        userinfo_endpoint: user_info_url(host: OIDCProvider.issuer),
+        end_session_endpoint: end_session_url(host: OIDCProvider.issuer),
+        jwks_uri: jwks_url(host: OIDCProvider.issuer),
         scopes_supported: ["openid"] + OIDCProvider.supported_scopes.map(&:name),
         response_types_supported: [:code],
         grant_types_supported: [:authorization_code],

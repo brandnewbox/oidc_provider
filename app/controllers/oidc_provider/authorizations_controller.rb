@@ -13,7 +13,7 @@ module OIDCProvider
         client_id: @client.identifier,
         nonce: oauth_request.nonce,
         scopes: requested_scopes,
-        account: current_account
+        account: oidc_current_account
       )
 
       oauth_response.code = authorization.code
