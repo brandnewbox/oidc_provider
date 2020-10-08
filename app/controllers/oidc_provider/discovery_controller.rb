@@ -30,6 +30,7 @@ module OIDCProvider
         authorization_endpoint: authorizations_url,
         token_endpoint: tokens_url,
         userinfo_endpoint: user_info_url,
+        end_session_endpoint: end_session_url,
         jwks_uri: jwks_url,
         scopes_supported: ["openid"] + OIDCProvider.supported_scopes.map(&:name),
         response_types_supported: [:code],
