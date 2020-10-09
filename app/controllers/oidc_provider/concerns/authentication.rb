@@ -18,6 +18,10 @@ module OIDCProvider
           raise Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new
         end
       end
+
+      def unauthenticate!
+        send(OIDCProvider.current_unauthenticate_method)
+      end
     end
   end
 end

@@ -34,6 +34,9 @@ module OIDCProvider
   mattr_accessor :current_authentication_method
   @@current_authentication_method = :authenticate_user!
 
+  mattr_accessor :current_unauthenticate_method
+  @@current_unauthenticate_method = :sign_out
+
   mattr_accessor :account_identifier
   @@account_identifier = :id
 
