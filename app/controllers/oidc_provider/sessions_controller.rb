@@ -4,11 +4,7 @@ module OIDCProvider
 
     def destroy
       unauthenticate!
-      if OIDCProvider.after_sign_out_method
-        send(OIDCProvider.after_sign_out_method)
-      else
-        redirect_to "/"
-      end
+      redirect_to after_oidc_sign_out_path
     end
   end
 end
