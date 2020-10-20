@@ -4,7 +4,7 @@ module OIDCProvider
 
     def destroy
       unauthenticate!
-      redirect_to OIDCProvider.after_sign_out_path
+      redirect_to after_oidc_sign_out_path
     end
   end
 end

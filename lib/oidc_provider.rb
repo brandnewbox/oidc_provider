@@ -40,9 +40,6 @@ module OIDCProvider
   mattr_accessor :account_identifier
   @@account_identifier = :id
 
-  mattr_accessor :after_sign_out_path
-  @@after_sign_out_path = "/"
-
   def self.add_client(&block)
     @@clients << Client::Builder.new(&block).build
   end
