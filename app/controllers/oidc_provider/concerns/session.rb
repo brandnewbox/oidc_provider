@@ -1,6 +1,6 @@
 module OIDCProvider
   module Concerns
-    module Sessions
+    module Session
       def after_oidc_sign_out_path
         "/"
       end
