@@ -21,7 +21,7 @@ module OIDCProvider
         }]
       }
       jrd[:subject] = params[:resource] if params[:resource].present?
-      render json: jrd, content_type: Mime::JRD
+      render json: jrd, content_type: "application/jrd+json"
     end
 
     def openid_configuration
