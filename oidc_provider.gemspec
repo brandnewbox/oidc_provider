@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version     = OIDCProvider::VERSION
   s.authors     = ["William Carey"]
   s.email       = ["willtcarey@gmail.com"]
-  s.homepage    = "http://brandnewbox.com"
+  s.homepage    = "https://github.com/brandnewbox/oidc_provider"
   s.summary     = "Uses the openid_connect gem to turn a Rails app into an OpenID Connect provider."
   s.description = "A Rails engine for providing OpenID Connect authorization."
   s.license     = "MIT"
