@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "openid_connect"
 require "oidc_provider/engine"
 

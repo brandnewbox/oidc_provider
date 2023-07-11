@@ -41,13 +41,18 @@ $ rails db:migrate
 
 ### Private Key
 
-You will need to generate a unique private key per application.
+This gem signs the generated [JWT (JSON Web Tokens)](https://jwt.io/) using a
+private key that should exist at the path `lib/oidc_provider_key.pem` in your
+Rails application.
+
+You can pass its passphrase using the `OIDC_PROVIDER_KEY_PASSPHRASE` environment
+variable.
+
+This gem provide a convenient way of generating one if you need it by running :
 
 ```bash
-$ ssh-keygen
+$ rails oidc_provider:generate_key
 ```
-
-Due to Docker Composes' lack of support for multiline `.env` variables, put a passphrase on it. Then add the key to your application at `lib/oidc_provider_key.pem` and add the passphrase as an environment variables in your application: `ENV["OIDC_PROVIDER_KEY_PASSPHRASE"]`.
 
 # Testing
 
