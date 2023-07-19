@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OIDCProvider
   class AuthorizationsController < ApplicationController
     include Concerns::ConnectEndpoint
@@ -29,7 +31,7 @@ module OIDCProvider
 
     def require_client
       @client = ClientStore.new.find_by(identifier: oauth_request.client_id) or oauth_request.invalid_request! 'not a valid client'
-      @redirect_uri = oauth_request.verify_redirect_uri! [oauth_request.redirect_uri, @client.redirect_uri]
+      @redirect_uri = oauth_request.verify_redirect_uri!(@client.redirect_uri)
     end
 
     def requested_scopes
