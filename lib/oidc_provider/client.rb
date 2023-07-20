@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OIDCProvider
   class Client
     attr_accessor :identifier, :secret, :redirect_uri, :name
@@ -5,7 +7,7 @@ module OIDCProvider
     def initialize(options = {})
       @identifier = options[:identifier]
       @secret = options[:secret]
-      @redirect_uri = options[:redirect_uri]
+      @redirect_uri = Array(options[:redirect_uri])
       @name = options[:name]
     end
   end
