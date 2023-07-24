@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 module OIDCProvider
   class IdToken < ApplicationRecord
+    PASSPHRASE_ENV_VAR = 'OIDC_PROVIDER_KEY_PASSPHRASE'
+
     belongs_to :authorization
 
     attribute :expires_at, :datetime, default: -> { 1.hour.from_now }
@@ -24,8 +28,19 @@ module OIDCProvider
     private
 
     class << self
+      def config
+        {
+          issuer: OIDCProvider.issuer,
+          jwk_set: JSON::JWK::Set.new(public_jwk)
+        }
+      end
+
+      def oidc_provider_key_path
+        Rails.root.join("lib/oidc_provider_key.pem")
+      end
+
       def key_pair
-        @key_pair ||= OpenSSL::PKey::RSA.new(File.read(Rails.root.join("lib/oidc_provider_key.pem")), ENV["OIDC_PROVIDER_KEY_PASSPHRASE"])
+        @key_pair ||= OpenSSL::PKey::RSA.new(File.read(oidc_provider_key_path), ENV[PASSPHRASE_ENV_VAR])
       end
 
       def private_jwk
@@ -34,13 +49,6 @@ module OIDCProvider
 
       def public_jwk
         JSON::JWK.new key_pair.public_key
-      end
-
-      def config
-        {
-          issuer: OIDCProvider.issuer,
-          jwk_set: JSON::JWK::Set.new(public_jwk)
-        }
       end
     end
   end
