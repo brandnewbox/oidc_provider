@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OIDCProvider
   class AuthorizationsController < ApplicationController
     include Concerns::ConnectEndpoint
@@ -8,13 +10,9 @@ module OIDCProvider
     before_action :require_authentication
 
     def create
-      puts "scopes: #{requested_scopes}"
-      authorization = Authorization.create(
-        client_id: @client.identifier,
-        nonce: oauth_request.nonce,
-        scopes: requested_scopes,
-        account: oidc_current_account
-      )
+      Rails.logger.info "scopes: #{requested_scopes}"
+
+      authorization = build_authorization_with(requested_scopes)
 
       oauth_response.code = authorization.code
       oauth_response.redirect_uri = @redirect_uri
@@ -27,21 +25,29 @@ module OIDCProvider
 
     private
 
+    def build_authorization_with(scopes)
+      Authorization.create(
+        client_id: @client.identifier,
+        nonce: oauth_request.nonce,
+        scopes: scopes,
+        account: oidc_current_account
+      )
+    end
+
     def require_client
       @client = ClientStore.new.find_by(identifier: oauth_request.client_id) or oauth_request.invalid_request! 'not a valid client'
-      @redirect_uri = oauth_request.verify_redirect_uri! [oauth_request.redirect_uri, @client.redirect_uri]
+      @redirect_uri = oauth_request.verify_redirect_uri! @client.redirect_uri
     end
 
     def requested_scopes
-      @requested_scopes ||= (["openid"] + OIDCProvider.supported_scopes.map(&:name)) & oauth_request.scope
+      @requested_scopes ||= (['openid'] + OIDCProvider.supported_scopes.map(&:name)) & oauth_request.scope
     end
     helper_method :requested_scopes
 
     def require_response_type_code
-      unless oauth_request.response_type == :code
-        oauth_request.unsupported_response_type!
-      end
+      return if oauth_request.response_type == :code
+
+      oauth_request.unsupported_response_type!
     end
   end
-
 end
