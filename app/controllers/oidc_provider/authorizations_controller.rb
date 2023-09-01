@@ -7,6 +7,7 @@ module OIDCProvider
     before_action :require_oauth_request
     before_action :require_response_type_code
     before_action :require_client
+    before_action :reset_login_if_necessary
     before_action :require_authentication
 
     def create
@@ -48,6 +49,16 @@ module OIDCProvider
       return if oauth_request.response_type == :code
 
       oauth_request.unsupported_response_type!
+    end
+
+    def reset_login_if_necessary
+      if params[:prompt] == "login"
+        # A `prompt=login` param means that we must prompt the user for sign in.
+        # So we will forcibly sign out the user here and then redirect them so they
+        # don't get redirected back to the url that contains `prompt=login`
+        unauthenticate!
+        redirect_to url_for(request.query_parameters.except(:prompt))
+      end
     end
   end
 end
