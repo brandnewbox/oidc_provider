@@ -1,23 +1,32 @@
-$:.push File.expand_path("lib", __dir__)
+# frozen_string_literal: true
 
-# Maintain your gem's version:
-require "oidc_provider/version"
+require_relative 'lib/oidc_provider/version'
 
-# Describe your gem and declare its dependencies:
-Gem::Specification.new do |s|
-  s.name        = "oidc_provider"
-  s.version     = OIDCProvider::VERSION
-  s.authors     = ["William Carey"]
-  s.email       = ["willtcarey@gmail.com"]
-  s.homepage    = "https://github.com/brandnewbox/oidc_provider"
-  s.summary     = "Uses the openid_connect gem to turn a Rails app into an OpenID Connect provider."
-  s.description = "A Rails engine for providing OpenID Connect authorization."
-  s.license     = "MIT"
+Gem::Specification.new do |spec|
+  spec.name = 'oidc_provider'
+  spec.version = OIDCProvider::VERSION
+  spec.authors = ['William Carey']
+  spec.email = ['willtcarey@gmail.com']
 
-  s.files = Dir["{app,config,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
+  spec.summary = 'Uses the openid_connect gem to turn a Rails app into an OpenID Connect provider.'
+  spec.description = 'A Rails engine for providing OpenID Connect authorization.'
+  spec.homepage = 'https://github.com/brandnewbox/oidc_provider'
+  spec.license = 'MIT'
+  spec.required_ruby_version = '>= 3.0'
 
-  s.add_dependency "rails", "> 4.0"
-  s.add_dependency "openid_connect", "~> 1.1.3"
+  spec.metadata['allowed_push_host'] = 'https://rubygems.org'
 
-  # s.add_development_dependency "sqlite3"
+  spec.metadata['homepage_uri'] = spec.homepage
+  spec.metadata['source_code_uri'] = spec.homepage
+  # No changelog yet.
+  # spec.metadata['changelog_uri'] = "#{spec.homepage}/blob/master/CHANGELOG"
+
+  # Specify which files should be added to the gem when it is released.
+  spec.files = Dir['{app,config,lib}/**/*', 'MIT-LICENSE', 'Rakefile', 'README.md']
+  spec.bindir = 'exe'
+  spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
+  spec.require_paths = ['lib']
+
+  spec.add_dependency 'openid_connect', '~> 2.2.0'
+  spec.add_dependency 'rails', '> 4.0'
 end
