@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 namespace :oidc_provider do
-  desc 'Generate the lib/oidc_provider_key.pem key file'
+  desc 'Generate the oidc_provider_key.pem key file'
   task generate_key: :environment do
     key_filepath = OIDCProvider::IdToken.oidc_provider_key_path
 

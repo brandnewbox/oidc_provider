@@ -43,7 +43,7 @@ $ rails db:migrate
 
 This gem signs the generated [JWT (JSON Web Tokens)](https://jwt.io/) using a
 private key that should exist at the path `lib/oidc_provider_key.pem` in your
-Rails application.
+Rails application (or in the path defined in the OIDC_PROVIDER_PRIVATE_KEY_PATH).
 
 You can pass its passphrase using the `OIDC_PROVIDER_KEY_PASSPHRASE` environment
 variable.
