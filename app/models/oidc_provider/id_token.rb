@@ -36,7 +36,7 @@ module OIDCProvider
       end
 
       def oidc_provider_key_path
-        Rails.root.join("lib/oidc_provider_key.pem")
+        ENV.fetch('OIDC_PROVIDER_PRIVATE_KEY_PATH', Rails.root.join('lib/oidc_provider_key.pem'))
       end
 
       def key_pair
