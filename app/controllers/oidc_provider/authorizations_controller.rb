@@ -18,7 +18,7 @@ module OIDCProvider
       oauth_response.code = authorization.code
       oauth_response.redirect_uri = @redirect_uri
       oauth_response.approve!
-      redirect_to oauth_response.location
+      redirect_to oauth_response.location, allow_other_host: true
 
       # If we ever need to support denied authorizations that is done by:
       # oauth_request.access_denied!
