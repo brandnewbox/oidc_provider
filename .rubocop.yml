@@ -1,0 +1,10 @@
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 3.0
+
+Naming/RescuedExceptionsVariableName:
+  Enabled: Yes
+  PreferredName: error
+
+Style/Documentation:
+  Enabled: No
