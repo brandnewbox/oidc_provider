@@ -5,14 +5,12 @@ require 'oidc_provider/engine'
 require 'oidc_provider/errors'
 
 module OIDCProvider
-  # rubocop:disable Naming/ConstantName
   module Scopes
     OpenID = 'openid'
     Profile = 'profile'
     Email = 'email'
     Address = 'address'
   end
-  # rubocop:enable Naming/ConstantName
 
   autoload :AccountToUserInfo, 'oidc_provider/account_to_user_info'
   autoload :Client, 'oidc_provider/client'

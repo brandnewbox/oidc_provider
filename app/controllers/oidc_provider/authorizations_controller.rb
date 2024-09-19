@@ -10,7 +10,6 @@ module OIDCProvider
     before_action :require_client
     before_action :reset_login_if_necessary
     before_action :require_authentication
-    before_action :print_scopes_and_claims
 
     def create
       authorization = build_authorization
@@ -34,7 +33,7 @@ module OIDCProvider
         account: oidc_current_account
       )
 
-      oauth_request.claims && authorization.claims = JSON.parse(oauth_request.claims)
+      authorization.claims = JSON.parse(oauth_request.claims) if oauth_request.claims
 
       authorization.save
       authorization
@@ -54,11 +53,6 @@ module OIDCProvider
     rescue JSON::ParserError => error
       Rails.logger.error "Invalid claims passed: #{error.message}"
       oauth_request.invalid_request! 'claims just be a JSON'
-    end
-
-    def print_scopes_and_claims
-      Rails.logger.info "scopes: #{requested_scopes}"
-      Rails.logger.info "claims: #{oauth_request.claims}"
     end
 
     def require_client
