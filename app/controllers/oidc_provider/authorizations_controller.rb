@@ -6,14 +6,13 @@ module OIDCProvider
 
     before_action :require_oauth_request
     before_action :require_response_type_code
+    before_action :ensure_claims_is_valid
     before_action :require_client
     before_action :reset_login_if_necessary
     before_action :require_authentication
 
     def create
-      Rails.logger.info "scopes: #{requested_scopes}"
-
-      authorization = build_authorization_with(requested_scopes)
+      authorization = build_authorization
 
       oauth_response.code = authorization.code
       oauth_response.redirect_uri = @redirect_uri
@@ -26,13 +25,34 @@ module OIDCProvider
 
     private
 
-    def build_authorization_with(scopes)
-      Authorization.create(
+    def build_authorization
+      authorization = Authorization.new(
         client_id: @client.identifier,
         nonce: oauth_request.nonce,
-        scopes: scopes,
+        scopes: requested_scopes,
         account: oidc_current_account
       )
+
+      authorization.claims = JSON.parse(oauth_request.claims) if oauth_request.claims
+
+      authorization.save
+      authorization
+    end
+
+    def ensure_claims_is_valid
+      return true unless oauth_request.claims
+
+      validate_json_is_a_hash!(parse_claims_as_json!)
+    rescue Errors::InvalidClaimsFormatError => error
+      Rails.logger.error "Invalid claims passed: #{error.message}"
+      oauth_request.invalid_request! 'invalid claims format'
+    end
+
+    def parse_claims_as_json!
+      JSON.parse(oauth_request.claims)
+    rescue JSON::ParserError => error
+      Rails.logger.error "Invalid claims passed: #{error.message}"
+      oauth_request.invalid_request! 'claims just be a JSON'
     end
 
     def require_client
@@ -59,6 +79,21 @@ module OIDCProvider
         unauthenticate!
         redirect_to url_for(request.query_parameters.except(:prompt))
       end
+    end
+
+    # Recursive method validating the given `json` is a hash of hashes
+    def validate_json_is_a_hash!(json)
+      # When reaching the end of the json/hash path, we're getting a `nil`, or
+      # a String (hard coded value) or the `essential` boolean value (not yet
+      # implemented).
+      #
+      # For example, when the previous call of this method received
+      # `{ email: nil }`, the current call of this method receives `nil`.
+      return if json.nil? || json.is_a?(String)
+
+      raise Errors::InvalidClaimsFormatError unless json.is_a?(Hash)
+
+      json.each_key { |key| validate_json_is_a_hash!(json[key]) }
     end
   end
 end

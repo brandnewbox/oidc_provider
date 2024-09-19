@@ -11,14 +11,7 @@ module OIDCProvider
     delegate :account, to: :authorization
 
     def to_response_object
-      OpenIDConnect::ResponseObject::IdToken.new(
-        iss: OIDCProvider.issuer,
-        sub: account.send(OIDCProvider.account_identifier),
-        aud: authorization.client_id,
-        nonce: nonce,
-        exp: expires_at.to_i,
-        iat: created_at.to_i
-      )
+      OpenIDConnect::ResponseObject::IdToken.new(id_token_attributes)
     end
 
     def to_jwt
@@ -26,6 +19,57 @@ module OIDCProvider
     end
 
     private
+
+    # Return a Struct accepting all the possible attributes from an instance of
+    # the OpenIDConnect::ResponseObject::IdToken class used to collect the scope
+    # values and populate the OpenIDConnect::ResponseObject::IdToken instance
+    # that will be returned by the above `to_response_object`.
+    #
+    # At first I used an OpenStruct but since it has been officially discouraged
+    # for performance, version compatibility, and potential security issues,
+    # a `Struct` with predefined attributes is used instead.
+    # See https://docs.ruby-lang.org/en/3.0/OpenStruct.html#class-OpenStruct-label-Caveats
+    def build_id_token_struct
+      Struct.new(*OpenIDConnect::ResponseObject::IdToken.all_attributes)
+    end
+
+    def build_user_info_struct
+      Struct.new(*OpenIDConnect::ResponseObject::UserInfo.all_attributes)
+    end
+
+    def build_values_from_scope(scope_config)
+      attributes, context = prepare_response_object_builder_from(scope_config)
+
+      ResponseObjectBuilder.new(attributes, context, scope_config.requested_claims)
+                           .run(&scope_config.scope.work)
+
+      response_attributes = attributes.to_h.compact
+
+      scope_config.force_claim.each do |key, value|
+        response_attributes[key] = value
+      end
+
+      response_attributes
+    end
+
+    def id_token_attributes
+      scope_configs.each_with_object({}) do |scope_config, memo|
+        output = build_values_from_scope(scope_config)
+        memo.merge!(output)
+      end
+    end
+
+    def prepare_response_object_builder_from(scope_config)
+      if scope_config.name == OIDCProvider::Scopes::OpenID
+        [build_id_token_struct.new, self]
+      else
+        [build_user_info_struct.new, account]
+      end
+    end
+
+    def scope_configs
+      authorization.scope_configs_for(:id_token)
+    end
 
     class << self
       def config
