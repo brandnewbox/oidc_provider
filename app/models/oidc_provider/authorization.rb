@@ -9,7 +9,7 @@ module OIDCProvider
     attribute :code, :string, default: -> { SecureRandom.hex 32 }
     attribute :expires_at, :datetime, default: -> { 5.minutes.from_now }
 
-    serialize :scopes, JSON
+    serialize :scopes, coder: JSON
 
     def expire!
       self.expires_at = Time.now
