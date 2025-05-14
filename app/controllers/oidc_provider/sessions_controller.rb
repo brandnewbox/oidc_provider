@@ -5,7 +5,7 @@ module OIDCProvider
     def destroy
       unauthenticate!
       redirect_to "/" unless OIDCProvider.after_sign_out_path
-       (OIDCProvider.after_sign_out_path.respond_to?(:call) ? OIDCProvider.after_sign_out_path.call(params) : OIDCProvider.after_sign_out_path), allow_other_host: true
+      redirect_to (OIDCProvider.after_sign_out_path.respond_to?(:call) ? OIDCProvider.after_sign_out_path.call(params) : OIDCProvider.after_sign_out_path), allow_other_host: true
     end
   end
 end
