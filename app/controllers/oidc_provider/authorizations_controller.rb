@@ -57,7 +57,7 @@ module OIDCProvider
         # So we will forcibly sign out the user here and then redirect them so they
         # don't get redirected back to the url that contains `prompt=login`
         unauthenticate!
-        redirect_to url_for(request.query_parameters.except(:prompt))
+        redirect_to url_for(request.query_parameters.except(:prompt)), allow_other_host: true
       end
     end
   end
